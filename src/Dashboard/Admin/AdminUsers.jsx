@@ -30,7 +30,7 @@ const AdminUsers = () => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://localhost:5173.app/users/admin/${user._id}`
+            `http://localhost:5173/users/admin/${user._id}`
           )
           .then((res) => {
             if (res.data.modifiedCount > 0) {
@@ -61,7 +61,7 @@ const AdminUsers = () => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `http://localhost:5173.app/users/volunteer/${user._id}`
+            `http://localhost:5173/users/volunteer/${user._id}`
           )
           .then((res) => {
             if (res.data.modifiedCount > 0) {
@@ -91,7 +91,7 @@ const AdminUsers = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5173.app/userStatus/${id}`,
+          `http://localhost:5173/userStatus/${id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

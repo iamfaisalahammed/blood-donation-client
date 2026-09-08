@@ -1,10 +1,13 @@
 import { useState } from "react";
-import banner from "../../assets/banner.jpg";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { FaHeart, FaXmark } from "react-icons/fa6";
+import banner from "../../assets/banner.jpg";
 
 const Banner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,208 +20,397 @@ const Banner = () => {
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
+    document.body.style.overflow = "hidden";
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    document.body.style.overflow = "auto";
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
+    }));
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      district: "",
+      upazila: "",
+      location: "",
+      bloodGroup: "",
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
     try {
-      const response = await axios.post(
-        "http://localhost:5173.app/donors",
-        formData
-      );
+      await axios.post("http://localhost:3000/donors", formData);
 
-      Swal.fire({
-        icon: "success",
-        title: "Thank you for your interest!",
-        text: "You have successfully submitted your details to become a donor.",
-        confirmButtonText: "Close",
-      });
       handleCloseModal();
+      resetForm();
 
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        district: "",
-        upazila: "",
-        location: "",
-        bloodGroup: "",
+      await Swal.fire({
+        icon: "success",
+        title: "Thank You!",
+        text: "Your donor information has been submitted successfully.",
+        confirmButtonText: "Done",
+        confirmButtonColor: "#dc2626",
+        background: "#ffffff",
+        color: "#111827",
       });
     } catch (error) {
+      console.error("Donor submission error:", error);
+
       Swal.fire({
         icon: "error",
-        title: "Oops...",
-        text: "Something went wrong. Please try again.",
-        confirmButtonText: "Close",
+        title: "Submission Failed",
+        text:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
+        confirmButtonText: "Try Again",
+        confirmButtonColor: "#dc2626",
+        background: "#ffffff",
+        color: "#111827",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="relative hero min-h-screen bg-white text-white overflow-hidden flex items-center justify-center px-4 md:px-12">
-      <div className="absolute top-10 left-10 w-5 h-5 bg-red-600 rounded-full shadow-lg animate-float"></div>
-      <div className="absolute top-20 right-20 w-4 h-4 bg-red-500 rounded-full shadow-md animate-float2"></div>
-      <div className="absolute bottom-16 left-1/4 w-6 h-6 bg-red-700 rounded-full shadow-lg animate-float3"></div>
+    <>
+      {/* ================= HERO ================= */}
+      <section className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-white px-5 py-16 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+        {/* Very subtle background decoration */}
+        <div className="pointer-events-none absolute -left-40 top-20 h-80 w-80 rounded-full bg-red-50/70 blur-3xl" />
 
-      <div className="hero-content flex flex-col lg:flex-row-reverse gap-10 lg:gap-16">
-        <div className="relative">
-          <img
-            src={banner}
-            alt="Blood Donation"
-            className="rounded-lg w-full max-w-xs md:max-w-md lg:max-w-lg border-4 border-white transform transition-transform duration-500 hover:scale-105"
-          />
+        <div className="pointer-events-none absolute -right-40 bottom-0 h-80 w-80 rounded-full bg-red-50/60 blur-3xl" />
+
+        <div className="relative z-10 mx-auto flex min-h-[calc(100vh-160px)] max-w-7xl items-center">
+          <div className="grid w-full items-center gap-14 lg:grid-cols-2 lg:gap-20">
+            {/* ================= LEFT ================= */}
+            <div className="order-2 lg:order-1">
+              {/* Small Label */}
+              <div className="mb-7">
+                <span className="border-l-[3px] border-red-600 pl-3 text-xs font-bold uppercase tracking-[0.22em] text-red-600">
+                  Blood Donation Campaign
+                </span>
+              </div>
+
+              {/* Heading */}
+              <h1 className="max-w-2xl text-center text-5xl font-black leading-[1.05] tracking-tight text-gray-950 sm:text-6xl md:text-7xl lg:text-left lg:text-[64px] xl:text-[76px]">
+                <span className="block font-serif italic">
+                  Donate Blood,
+                </span>
+
+                <span className="mt-2 block font-serif italic text-red-600">
+                  Save Lives.
+                </span>
+              </h1>
+
+              {/* Underline */}
+              <div className="mx-auto mt-5 h-[3px] w-16 rounded-full bg-red-600 lg:mx-0" />
+
+              {/* Description */}
+              <p className="mx-auto mt-7 max-w-xl text-center text-base font-medium leading-8 text-gray-600 sm:text-lg lg:mx-0 lg:text-left">
+                A small act of kindness can give someone another chance at
+                life. Become a donor and help build a stronger, healthier
+                community.
+              </p>
+
+              {/* CTA */}
+              <div className="mt-9 flex justify-center lg:justify-start">
+                <button
+                  onClick={handleOpenModal}
+                  className="group flex items-center gap-3 rounded-xl bg-red-600 px-7 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-red-100 transition-all duration-300 hover:-translate-y-1 hover:bg-red-700 hover:shadow-xl hover:shadow-red-200"
+                >
+                  <FaHeart className="text-sm transition-transform duration-300 group-hover:scale-110" />
+
+                  <span>Become a Donor</span>
+                </button>
+              </div>
+
+              {/* Simple Bottom Text */}
+              <div className="mt-8 flex justify-center lg:justify-start">
+                <p className="text-sm font-medium text-gray-400">
+                  Your donation can make a lasting difference.
+                </p>
+              </div>
+            </div>
+
+            {/* ================= RIGHT IMAGE ================= */}
+            <div className="order-1 flex justify-center lg:order-2">
+              <div className="relative w-full max-w-[520px]">
+                {/* Thin decorative frame */}
+                <div className="absolute -inset-3 rounded-[32px] border border-red-100" />
+
+                {/* Image Card */}
+                <div className="relative rounded-[28px] border border-gray-100 bg-white p-2 shadow-[0_20px_60px_rgba(0,0,0,0.09)]">
+                  <div className="overflow-hidden rounded-[22px]">
+                    <img
+                      src={banner}
+                      alt="Blood Donation"
+                      className="h-[360px] w-full object-cover transition-transform duration-700 hover:scale-[1.03] sm:h-[440px] md:h-[500px]"
+                    />
+                  </div>
+                </div>
+
+                {/* Minimal bottom information */}
+                <div className="absolute -bottom-5 left-1/2 w-[85%] -translate-x-1/2 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-lg">
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-red-600" />
+
+                    <p className="text-center text-sm font-semibold text-gray-700">
+                      One donation can help save lives.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div className="max-w-lg text-center lg:text-left">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold uppercase relative">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-700">
-              Donate Blood,
-            </span>
-            <br />
-            <span className="text-red-500">Save Lives</span>
-            <span className="absolute -top-2 -left-3 w-2 h-2 bg-red-500 rounded-full animate-bounce"></span>
-          </h1>
-
-          <p className="py-6 text-black md:text-lg leading-relaxed opacity-90">
-            Your blood donation can make a difference. Join us in our mission to
-            save lives and support those in need.
-          </p>
-
-          <button
-            onClick={handleOpenModal}
-            className="relative px-6 py-3 md:px-8 md:py-4 text-base md:text-lg font-bold uppercase tracking-wider text-white transition-all duration-300 bg-gradient-to-r from-red-700 to-red-900 rounded-lg shadow-xl hover:shadow-red-500/50 transform hover:scale-105 hover:-translate-y-1"
-          >
-            <span className="relative z-10">Become a Donor</span>
-
-            <span className="absolute -bottom-2 left-1/2 w-3 h-3 bg-red-600 rounded-full animate-drip"></span>
-            <span className="absolute -bottom-4 right-1/3 w-2 h-2 bg-red-500 rounded-full animate-drip2"></span>
-            <span className="absolute -bottom-3 left-1/4 w-2 h-2 bg-red-700 rounded-full animate-drip3"></span>
-
-            <span className="absolute top-0 left-0 w-full h-full bg-red-500 opacity-10 rounded-lg blur-lg animate-pulse"></span>
-          </button>
-        </div>
-      </div>
-
-      {/* Modal */}
+      {/* ================= MODAL ================= */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 px-4 py-6 backdrop-blur-sm"
           onClick={handleCloseModal}
         >
           <div
-            className="bg-white p-8 rounded-lg max-w-lg w-full shadow-lg relative"
+            className="relative max-h-[95vh] w-full max-w-2xl overflow-y-auto rounded-[28px] bg-white p-5 shadow-2xl sm:p-7 md:p-9"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-3xl font-semibold text-center text-red-600 mb-4">
-              Become a Donor
-            </h2>
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 gap-4">
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  placeholder="Your Name"
-                  className="p-3 rounded-lg border-2 text-black border-gray-300 focus:border-red-500"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                />
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  placeholder="Your Email"
-                  className="p-3 rounded-lg border-2 text-black border-gray-300 focus:border-red-500"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
-                <input
-                  type="text"
-                  required
-                  name="phone"
-                  placeholder="Your Phone Number"
-                  className="p-3 rounded-lg border-2 text-black border-gray-300 focus:border-red-500"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                />
-                <input
-                  type="text"
-                  required
-                  name="district"
-                  placeholder="Your District"
-                  className="p-3 rounded-lg border-2 text-black border-gray-300 focus:border-red-500"
-                  value={formData.district}
-                  onChange={handleInputChange}
-                />
-                <input
-                  type="text"
-                  required
-                  name="upazila"
-                  placeholder="Your Upazila"
-                  className="p-3 rounded-lg border-2 text-black border-gray-300 focus:border-red-500"
-                  value={formData.upazila}
-                  onChange={handleInputChange}
-                />
-                <input
-                  type="text"
-                  required
-                  name="location"
-                  placeholder="Your Location"
-                  className="p-3 rounded-lg border-2 text-black border-gray-300 focus:border-red-500"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                />
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={handleCloseModal}
+              className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-all duration-200 hover:bg-red-50 hover:text-red-600"
+              aria-label="Close"
+            >
+              <FaXmark />
+            </button>
 
-                {/* Blood Group Select Input */}
-                <select
-                  name="bloodGroup"
-                  required
-                  className="p-3 rounded-lg border-2 text-black border-gray-300 focus:border-red-500"
-                  value={formData.bloodGroup}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select Blood Group</option>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                </select>
+            {/* Modal Header */}
+            <div className="mb-7 pr-12">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.18em] text-red-600">
+                Join Our Community
+              </p>
+
+              <h2 className="font-serif text-3xl font-black italic text-gray-950 md:text-4xl">
+                Become a Donor
+              </h2>
+
+              <p className="mt-2 max-w-lg text-sm leading-6 text-gray-500">
+                Please provide your information to register as a blood donor.
+              </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                {/* Name */}
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="mb-2 block text-sm font-bold text-gray-800"
+                  >
+                    Full Name
+                  </label>
+
+                  <input
+                    id="name"
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm font-medium text-black outline-none transition-all placeholder:text-gray-400 focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-50"
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block text-sm font-bold text-gray-800"
+                  >
+                    Email Address
+                  </label>
+
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm font-medium text-black outline-none transition-all placeholder:text-gray-400 focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-50"
+                  />
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="mb-2 block text-sm font-bold text-gray-800"
+                  >
+                    Phone Number
+                  </label>
+
+                  <input
+                    id="phone"
+                    type="tel"
+                    name="phone"
+                    required
+                    placeholder="01XXXXXXXXX"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm font-medium text-black outline-none transition-all placeholder:text-gray-400 focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-50"
+                  />
+                </div>
+
+                {/* Blood Group */}
+                <div>
+                  <label
+                    htmlFor="bloodGroup"
+                    className="mb-2 block text-sm font-bold text-gray-800"
+                  >
+                    Blood Group
+                  </label>
+
+                  <select
+                    id="bloodGroup"
+                    name="bloodGroup"
+                    required
+                    value={formData.bloodGroup}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm font-medium text-black outline-none transition-all focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-50"
+                  >
+                    <option value="">Select blood group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                  </select>
+                </div>
+
+                {/* District */}
+                <div>
+                  <label
+                    htmlFor="district"
+                    className="mb-2 block text-sm font-bold text-gray-800"
+                  >
+                    District
+                  </label>
+
+                  <input
+                    id="district"
+                    type="text"
+                    name="district"
+                    required
+                    placeholder="Your district"
+                    value={formData.district}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm font-medium text-black outline-none transition-all placeholder:text-gray-400 focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-50"
+                  />
+                </div>
+
+                {/* Upazila */}
+                <div>
+                  <label
+                    htmlFor="upazila"
+                    className="mb-2 block text-sm font-bold text-gray-800"
+                  >
+                    Upazila
+                  </label>
+
+                  <input
+                    id="upazila"
+                    type="text"
+                    name="upazila"
+                    required
+                    placeholder="Your upazila"
+                    value={formData.upazila}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm font-medium text-black outline-none transition-all placeholder:text-gray-400 focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-50"
+                  />
+                </div>
+
+                {/* Location */}
+                <div className="md:col-span-2">
+                  <label
+                    htmlFor="location"
+                    className="mb-2 block text-sm font-bold text-gray-800"
+                  >
+                    Full Location
+                  </label>
+
+                  <input
+                    id="location"
+                    type="text"
+                    name="location"
+                    required
+                    placeholder="Village, area or detailed location"
+                    value={formData.location}
+                    onChange={handleInputChange}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm font-medium text-black outline-none transition-all placeholder:text-gray-400 focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-50"
+                  />
+                </div>
               </div>
-              <div className="flex justify-center mt-4">
+
+              {/* Form Buttons */}
+              <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="rounded-xl border border-gray-200 px-6 py-3.5 text-sm font-bold text-gray-700 transition-all hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-gradient-to-r  from-red-700 to-red-900 text-white font-semibold rounded-lg transform hover:scale-105"
+                  disabled={isSubmitting}
+                  className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-7 py-3.5 text-sm font-bold text-white shadow-md shadow-red-100 transition-all duration-300 hover:bg-red-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Submit
+                  {isSubmitting ? (
+                    <>
+                      <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <FaHeart />
+                      Submit Registration
+                    </>
+                  )}
                 </button>
               </div>
             </form>
-            <button
-              onClick={handleCloseModal}
-              className="absolute top-2 right-2 text-red-600 font-bold text-xl"
-            >
-              X
-            </button>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

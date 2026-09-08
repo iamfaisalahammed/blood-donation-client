@@ -37,7 +37,7 @@ const Create = () => {
     data.status = "pending";
     axios
       .post(
-        "http://localhost:5173.app/recipient",
+        "http://localhost:5173/recipient",
         data
       )
       .then((res) => {
@@ -54,7 +54,7 @@ const Create = () => {
       });
   };
   useEffect(() => {
-    fetch(`http://localhost:5173.app/user/Block`)
+    fetch(`http://localhost:5173/user/Block`)
       .then((res) => res.json())
       .then((Users) => setUsers(Users));
   }, []);

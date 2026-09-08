@@ -23,7 +23,7 @@ const Update = () => {
 
     // send data to the server and database
     fetch(
-      `http://localhost:5173.app/DonationUp/${_id}`,
+      `http://localhost:5173/DonationUp/${_id}`,
       {
         method: "PUT",
         headers: {

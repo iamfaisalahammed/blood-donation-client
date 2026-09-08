@@ -32,7 +32,7 @@ const Details = () => {
   useEffect(() => {
     if (!_id) return;
     axios.put(
-      `http://localhost:5173.app/DonationUpStatus/${_id}`,
+      `http://localhost:5173/DonationUpStatus/${_id}`,
       {
         status: "inprogress",
       }
@@ -48,7 +48,7 @@ const Details = () => {
 
     axios
       .post(
-        "http://localhost:5173.app/donor",
+        "http://localhost:5173/donor",
         formData
       )
       .then((res) => {

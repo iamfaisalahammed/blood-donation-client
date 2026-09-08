@@ -20,7 +20,7 @@ const DonorHome = () => {
       if (result.isConfirmed) {
         //   ----------Delete from the database--------
         fetch(
-          `http://localhost:5173.app/donationDelete/${id}`,
+          `http://localhost:5173/donationDelete/${id}`,
           {
             method: "DELETE",
           }
@@ -57,7 +57,7 @@ const DonorHome = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5173.app/upDonationStatus/${id}`,
+          `http://localhost:5173/upDonationStatus/${id}`,
           {
             method: "PUT",
             headers: {
@@ -90,7 +90,7 @@ const DonorHome = () => {
   useEffect(() => {
     if (user?.email) {
       fetch(
-        `http://localhost:5173.app/myDonor?email=${user.email}`
+        `http://localhost:5173/myDonor?email=${user.email}`
       )
         .then((res) => res.json())
         .then((donner) => setDonner(donner));

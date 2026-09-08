@@ -91,7 +91,7 @@ const router = createBrowserRouter([
 
     loader: ({ params }) =>
       fetch(
-        `http://localhost:5173.app/seeMore/${params.id}`
+        `http://localhost:5173/seeMore/${params.id}`
       ),
   },
   {
@@ -200,7 +200,7 @@ const router = createBrowserRouter([
         element: <Update></Update>,
         loader: ({ params }) =>
           fetch(
-            `http://localhost:5173.app/DonationUp/${params.id}`
+            `http://localhost:5173/DonationUp/${params.id}`
           ),
       },
       {
@@ -212,7 +212,7 @@ const router = createBrowserRouter([
         ),
         loader: ({ params }) =>
           fetch(
-            `http://localhost:5173.app/details/${params.id}`
+            `http://localhost:5173/details/${params.id}`
           ),
       },
     ],

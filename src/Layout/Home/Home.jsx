@@ -1,6 +1,6 @@
 import Banner from "./Banner";
 import ContactUs from "./ContactUs";
-import WhyChooseUs from "./Featured";
+import WhyChooseUs from "./WhyChooseUs";
 import SearchPage from "./SearchPage";
 
 const Home = () => {

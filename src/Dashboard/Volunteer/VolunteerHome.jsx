@@ -9,13 +9,13 @@ const VolunteerHome = () => {
   const [bloodreq, setBloodReq] = useState([]);
 
   // Fetch data
-  fetch(`http://localhost:5173.app/donor`)
+  fetch(`http://localhost:5173/donor`)
     .then((res) => res.json())
     .then((donner) => setDonner(donner));
-  fetch(`http://localhost:5173.app/fund`)
+  fetch(`http://localhost:5173/fund`)
     .then((res) => res.json())
     .then((funds) => setFund(funds));
-  fetch(`http://localhost:5173.app/DonationRequrests`)
+  fetch(`http://localhost:5173/DonationRequrests`)
     .then((res) => res.json())
     .then((bloodreq) => setBloodReq(bloodreq));
 

@@ -9,7 +9,7 @@ const DonationRequest = () => {
   const [viewMode, setViewMode] = useState("table");
 
   useEffect(() => {
-    fetch(`http://localhost:5173.app/DonationRequrest`)
+    fetch(`http://localhost:5173/DonationRequrest`)
       .then((res) => res.json())
       .then((donner) => setDonner(donner));
   }, []);

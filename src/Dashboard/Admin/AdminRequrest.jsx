@@ -33,7 +33,7 @@ const AdminRequest = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5173.app/donationDeletee/${currentDonnerId}`,
+          `http://localhost:5173/donationDeletee/${currentDonnerId}`,
           {
             method: "DELETE",
           }
@@ -70,7 +70,7 @@ const AdminRequest = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5173.app/upDonationStatuss/${currentDonnerId}`,
+          `http://localhost:5173/upDonationStatuss/${currentDonnerId}`,
           {
             method: "PUT",
             headers: {
@@ -103,7 +103,7 @@ const AdminRequest = () => {
 
   useEffect(() => {
     fetch(
-      `http://localhost:5173.app/DonationRequrestAdmin`
+      `http://localhost:5173/DonationRequrestAdmin`
     )
       .then((res) => res.json())
       .then((donner) => setDonner(donner));

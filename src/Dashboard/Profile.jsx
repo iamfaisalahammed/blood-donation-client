@@ -60,7 +60,7 @@ const Profile = () => {
     updatedData.image = imageUrl;
 
     const response = await axios.patch(
-      `http://localhost:5173.app/users/profile/${user?.email}`,
+      `http://localhost:5173/users/profile/${user?.email}`,
       updatedData
     );
     if (response.data.modifiedCount > 0) {
