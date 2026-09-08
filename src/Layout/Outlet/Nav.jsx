@@ -3,19 +3,32 @@ import logo from "../../assets/logo.png";
 import { useContext } from "react";
 import { AuthContext } from "../../Providers/AuthProvider";
 import { CiMenuKebab } from "react-icons/ci";
+import { FaHome, FaBlog, FaHandHoldingHeart, FaTachometerAlt } from "react-icons/fa";
+import { FiLogOut } from "react-icons/fi";
 
 const link = (
   <>
-    <NavLink className="hover:text-red-600 font-semibold uppercase" to="/">
+    <NavLink
+      className="flex items-center gap-2 text-gray-600 hover:text-red-600 font-semibold uppercase"
+      to="/"
+    >
+      <FaHome />
       Home
     </NavLink>
+
     <NavLink
-      className="hover:text-red-600 font-semibold uppercase"
+      className="flex items-center gap-2 text-gray-600 hover:text-red-600 font-semibold uppercase"
       to="/DonationRequest"
     >
+      <FaHandHoldingHeart />
       Donation Requests
     </NavLink>
-    <NavLink className="hover:text-red-600 font-semibold uppercase" to="/blog">
+
+    <NavLink
+      className="flex items-center gap-2 text-gray-600 hover:text-red-600 font-semibold uppercase"
+      to="/blog"
+    >
+      <FaBlog />
       Blog
     </NavLink>
   </>
@@ -25,100 +38,84 @@ const Nav = () => {
   const { user, logOut } = useContext(AuthContext);
 
   return (
-    <div className="navbar bg-white dark:bg-gray-900 text-gray-900 dark:text-white container mx-auto">
-      <div className="flex-1">
-        {/* Dropdown for smaller screens */}
-        <div className="dropdown dropdown-bottom lg:hidden">
-          <label tabIndex={0} className="">
-            <CiMenuKebab className="size-8 hover:text-red-900"></CiMenuKebab>
+    <div className="navbar bg-white px-2">
+      <div className="navbar-start">
+        <div className="dropdown lg:hidden">
+          <label tabIndex={0}>
+            <CiMenuKebab className="size-7 cursor-pointer hover:text-red-600" />
           </label>
+
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-3 shadow bg-white rounded-box w-64"
           >
             {link}
+
             {user && (
               <NavLink
-                to="/fund"
-                className="hover:text-red-600 font-semibold uppercase"
+                to="/dashboard"
+                className="flex items-center gap-2 text-gray-600 hover:text-red-600 font-semibold uppercase"
               >
-                Funding
+                <FaTachometerAlt />
+                Dashboard
               </NavLink>
             )}
           </ul>
         </div>
-        <div>
-          <img className="size-14" src={logo} alt="" />
-        </div>
-        <a className="font-bold text-lg">Blood Donation</a>
 
-        {/* Links for larger screens */}
-        <div className="hidden lg:flex flex-1 justify-center items-center space-x-4 whitespace-nowrap">
+        <Link to="/" className="flex items-center gap-2">
+          <img className="w-14 h-14 object-contain" src={logo} alt="logo" />
+          <h2 className="font-bold text-lg md:text-xl text-black">
+            Blood Donation
+          </h2>
+        </Link>
+      </div>
+
+      <div className="navbar-center hidden lg:flex">
+        <div className="flex items-center gap-8">
           {link}
+
           {user && (
             <NavLink
-              to="/fund"
-              className="hover:text-red-600 font-semibold uppercase"
+              to="/dashboard"
+              className="flex items-center gap-2 text-gray-600 hover:text-red-600 font-semibold uppercase"
             >
-              Funding
+              <FaTachometerAlt />
+              Dashboard
             </NavLink>
           )}
         </div>
       </div>
 
-      {/* Profile / Login section */}
-      {user ? (
-        <>
-          <div className="flex-none border-rose-600 border-2 rounded-full">
-            <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle avatar"
-              >
-                <div className="w-10 rounded-full">
-                  <img
-                    alt="Profile"
-                    src={
-                      user
-                        ? user?.photoURL
-                        : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                    }
-                  />
-                </div>
-              </div>
-              <ul
-                tabIndex={0}
-                className="menu menu-sm dropdown-content bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-box z-[1] mt-3 w-52 p-2 shadow"
-              >
-                <li>
-                  <Link
-                    className="hover:bg-red-500 font-semibold uppercase hover:text-white"
-                    to="dashboard"
-                  >
-                    Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    className="hover:bg-red-500 font-semibold uppercase hover:text-white"
-                    onClick={logOut}
-                  >
-                    logOut
-                  </button>
-                </li>
-              </ul>
-            </div>
+      <div className="navbar-end">
+        {user ? (
+          <div className="flex items-center gap-3">
+            <img
+              className="w-11 h-11 rounded-full object-cover"
+              src={
+                user?.photoURL ||
+                "https://i.ibb.co/4pDNDk1/avatar.png"
+              }
+              alt="profile"
+            />
+
+            <button
+              onClick={logOut}
+              className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700"
+            >
+              <FiLogOut />
+              Logout
+            </button>
           </div>
-        </>
-      ) : (
-        <Link
-          className="px-4 py-2 bg-red-600 text-white rounded-md font-bold hover:bg-red-700"
-          to="/login"
-        >
-          LOGIN
-        </Link>
-      )}
+        ) : (
+          <Link
+            className="bg-red-600 text-white px-5 py-2 rounded-md font-semibold hover:bg-red-700"
+            to="/login"
+          >
+            Login
+          </Link>
+        )}
+      </div>
     </div>
   );
 };

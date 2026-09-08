@@ -27,7 +27,7 @@ const SearchPage = () => {
 
     try {
       const res = await axios.get(
-        `https://blood-donation-server-eta-eight.vercel.app/searchDonor?${queryParams}`
+        `http://localhost:5173.app/searchDonor?${queryParams}`
       );
       setDonner(res.data);
     } catch (error) {

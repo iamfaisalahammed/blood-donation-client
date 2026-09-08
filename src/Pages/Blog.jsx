@@ -7,7 +7,7 @@ const Blog = () => {
 
   useEffect(() => {
     axios
-      .get("https://blood-donation-server-eta-eight.vercel.app/AllBlog")
+      .get("http://localhost:5173.app/AllBlog")
       .then((res) => {
         const publishedBlogs = res.data.filter(
           (blog) => blog.status === "published"

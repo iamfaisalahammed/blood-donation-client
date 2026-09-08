@@ -91,7 +91,7 @@ const router = createBrowserRouter([
 
     loader: ({ params }) =>
       fetch(
-        `https://blood-donation-server-eta-eight.vercel.app/seeMore/${params.id}`
+        `http://localhost:5173.app/seeMore/${params.id}`
       ),
   },
   {
@@ -200,7 +200,7 @@ const router = createBrowserRouter([
         element: <Update></Update>,
         loader: ({ params }) =>
           fetch(
-            `https://blood-donation-server-eta-eight.vercel.app/DonationUp/${params.id}`
+            `http://localhost:5173.app/DonationUp/${params.id}`
           ),
       },
       {
@@ -212,7 +212,7 @@ const router = createBrowserRouter([
         ),
         loader: ({ params }) =>
           fetch(
-            `https://blood-donation-server-eta-eight.vercel.app/details/${params.id}`
+            `http://localhost:5173.app/details/${params.id}`
           ),
       },
     ],

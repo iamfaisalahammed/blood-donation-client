@@ -6,7 +6,7 @@ const GiveFund = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
     axios
-      .post("https://blood-donation-server-eta-eight.vercel.app/fund", data)
+      .post("http://localhost:5173.app/fund", data)
       .then((res) => {
         navigate("/fundpay");
       });

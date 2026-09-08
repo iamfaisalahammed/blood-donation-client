@@ -37,7 +37,7 @@ const Create = () => {
     data.status = "pending";
     axios
       .post(
-        "https://blood-donation-server-eta-eight.vercel.app/recipient",
+        "http://localhost:5173.app/recipient",
         data
       )
       .then((res) => {
@@ -54,7 +54,7 @@ const Create = () => {
       });
   };
   useEffect(() => {
-    fetch(`https://blood-donation-server-eta-eight.vercel.app/user/Block`)
+    fetch(`http://localhost:5173.app/user/Block`)
       .then((res) => res.json())
       .then((Users) => setUsers(Users));
   }, []);

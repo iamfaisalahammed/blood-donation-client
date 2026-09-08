@@ -23,7 +23,7 @@ const Update = () => {
 
     // send data to the server and database
     fetch(
-      `https://blood-donation-server-eta-eight.vercel.app/DonationUp/${_id}`,
+      `http://localhost:5173.app/DonationUp/${_id}`,
       {
         method: "PUT",
         headers: {

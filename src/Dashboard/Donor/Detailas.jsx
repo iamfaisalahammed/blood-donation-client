@@ -32,7 +32,7 @@ const Details = () => {
   useEffect(() => {
     if (!_id) return;
     axios.put(
-      `https://blood-donation-server-eta-eight.vercel.app/DonationUpStatus/${_id}`,
+      `http://localhost:5173.app/DonationUpStatus/${_id}`,
       {
         status: "inprogress",
       }
@@ -48,7 +48,7 @@ const Details = () => {
 
     axios
       .post(
-        "https://blood-donation-server-eta-eight.vercel.app/donor",
+        "http://localhost:5173.app/donor",
         formData
       )
       .then((res) => {

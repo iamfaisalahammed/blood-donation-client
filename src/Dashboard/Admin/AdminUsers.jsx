@@ -30,7 +30,7 @@ const AdminUsers = () => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `https://blood-donation-server-eta-eight.vercel.app/users/admin/${user._id}`
+            `http://localhost:5173.app/users/admin/${user._id}`
           )
           .then((res) => {
             if (res.data.modifiedCount > 0) {
@@ -61,7 +61,7 @@ const AdminUsers = () => {
       if (result.isConfirmed) {
         axios
           .patch(
-            `https://blood-donation-server-eta-eight.vercel.app/users/volunteer/${user._id}`
+            `http://localhost:5173.app/users/volunteer/${user._id}`
           )
           .then((res) => {
             if (res.data.modifiedCount > 0) {
@@ -91,7 +91,7 @@ const AdminUsers = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `https://blood-donation-server-eta-eight.vercel.app/userStatus/${id}`,
+          `http://localhost:5173.app/userStatus/${id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

@@ -9,13 +9,13 @@ const VolunteerHome = () => {
   const [bloodreq, setBloodReq] = useState([]);
 
   // Fetch data
-  fetch(`https://blood-donation-server-eta-eight.vercel.app/donor`)
+  fetch(`http://localhost:5173.app/donor`)
     .then((res) => res.json())
     .then((donner) => setDonner(donner));
-  fetch(`https://blood-donation-server-eta-eight.vercel.app/fund`)
+  fetch(`http://localhost:5173.app/fund`)
     .then((res) => res.json())
     .then((funds) => setFund(funds));
-  fetch(`https://blood-donation-server-eta-eight.vercel.app/DonationRequrests`)
+  fetch(`http://localhost:5173.app/DonationRequrests`)
     .then((res) => res.json())
     .then((bloodreq) => setBloodReq(bloodreq));
 

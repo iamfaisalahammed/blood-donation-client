@@ -9,7 +9,7 @@ const AdminBlogs = () => {
 
   useEffect(() => {
     axios
-      .get("https://blood-donation-server-eta-eight.vercel.app/blog")
+      .get("http://localhost:5173.app/blog")
       .then((res) => setBlogs(res.data));
   }, []);
 
@@ -25,7 +25,7 @@ const AdminBlogs = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `https://blood-donation-server-eta-eight.vercel.app/blogs/${id}`,
+          `http://localhost:5173.app/blogs/${id}`,
           { method: "DELETE" }
         )
           .then((res) => res.json())
@@ -51,7 +51,7 @@ const AdminBlogs = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `https://blood-donation-server-eta-eight.vercel.app/blogStatus/${id}`,
+          `http://localhost:5173.app/blogStatus/${id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

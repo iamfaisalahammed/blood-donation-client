@@ -32,7 +32,7 @@ const AddBlogVlounter = () => {
       data.image = imageUploadResponse.data.data.url;
 
       const res = await axios.post(
-        "https://blood-donation-server-eta-eight.vercel.app/blog",
+        "http://localhost:5173.app/blog",
         {
           ...data,
           content,
