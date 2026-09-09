@@ -1,145 +1,171 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Providers/AuthProvider";
 import Swal from "sweetalert2";
+import {
+  FaTint,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaClock,
+  FaPhoneAlt,
+  FaUsers,
+} from "react-icons/fa";
 
 const DonorHome = () => {
   const [donners, setDonner] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
-  //! -------------delete---------------------------------
-
-  const handleUserDelete = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        //   ----------Delete from the database--------
-        fetch(
-          `http://localhost:5173/donationDelete/${id}`,
-          {
-            method: "DELETE",
-          }
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.deletedCount) {
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your item has been successfully deleted",
-                icon: "success",
-              });
-
-              const remainingDonner = donners.filter(
-                (singleDonner) => singleDonner._id !== id
-              );
-              setDonner(remainingDonner);
-            }
-          });
-      }
-    });
-  };
-  // --------------------------------------------------------------------------------------------
-  const handleStatusUp = (id, newStatus) => {
-    if (!id) return;
-
-    Swal.fire({
-      title: `Are you sure you want to mark this as ${newStatus}?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: `Yes, ${newStatus}!`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(
-          `http://localhost:5173/upDonationStatus/${id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ status: newStatus }),
-          }
-        )
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.modifiedCount > 0) {
-              Swal.fire({
-                title: "Updated!",
-                text: `The status has been changed to ${newStatus}`,
-                icon: "success",
-              });
-
-              const updatedDonners = donners.map((donner) =>
-                donner._id === id ? { ...donner, status: newStatus } : donner
-              );
-              setDonner(updatedDonners);
-            }
-          });
-      }
-    });
-  };
-
-  // ----------------------------------------------------------------------------------------------
 
   useEffect(() => {
     if (user?.email) {
-      fetch(
-        `http://localhost:5173/myDonor?email=${user.email}`
-      )
+      setLoading(true);
+
+      fetch(`http://localhost:5000/myDonor?email=${user.email}`)
         .then((res) => res.json())
-        .then((donner) => setDonner(donner));
+        .then((data) => {
+          setDonner(Array.isArray(data) ? data : []);
+        })
+        .catch((error) => {
+          console.error("Fetch Error:", error);
+
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to load donor information",
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [user]);
-  return (
-    <>
-      <div>
-        <h2 className="text-2xl text-center bg-gray-50 shadow-xl glass text-black py-2 rounded-lg ">
-          Information of Donors & Requesters
-        </h2>
-        <div className="divider "></div>
-      </div>
-      {/* -------------------------------Table----------------------- */}
-      <h1 className="text-xl font-bold text-center my-4 text-red-900">
-        {donners.length === 0 && "---- No donations found ---- "}
-      </h1>
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Recipient</th>
-              <th>Location</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Blood Group</th>
-              <th className="font-bold text-red-500">Donor Number</th>
-            </tr>
-          </thead>
 
-          <tbody>
-            {/* row  */}
-            {donners.map((donner, i) => (
-              <tr key={donner._id}>
-                <td>{i + 1}</td>
-                <td>{donner?.RecipientName}</td>
-                <td>{donner?.HospitalName}</td>
-                <td>{donner?.date}</td>
-                <td>{donner?.time}</td>
-                <td>{donner?.Blood}</td>
-                <td className="font-bold text-red-800">{donner?.number}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      {/* Header */}
+      <div className="bg-white rounded-3xl shadow-lg p-6 md:p-8 mb-6">
+        <div className="flex items-center gap-4">
+          <div className="bg-red-100 p-4 rounded-2xl">
+            <FaUsers className="text-2xl text-red-700" />
+          </div>
+
+          <div>
+            <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
+              Donor & Request Information
+            </h1>
+
+            <p className="text-gray-500 mt-2">
+              View all donation requests where you volunteered as a donor.
+            </p>
+          </div>
+        </div>
       </div>
-    </>
+
+      {/* Loading */}
+      {loading ? (
+        <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
+          <span className="loading loading-spinner loading-lg text-red-700"></span>
+          <p className="mt-4 text-gray-500">Loading donor information...</p>
+        </div>
+      ) : donners.length === 0 ? (
+        <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
+          <FaTint className="mx-auto text-5xl text-red-300 mb-4" />
+
+          <h2 className="text-2xl font-bold text-gray-700">
+            No Donations Found
+          </h2>
+
+          <p className="text-gray-500 mt-2">
+            You have not responded to any blood requests yet.
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
+          <div className="bg-red-700 text-white px-6 py-5">
+            <h2 className="text-xl font-bold">
+              Donation Request Records
+            </h2>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th>#</th>
+                  <th>Recipient</th>
+                  <th>Hospital</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Blood Group</th>
+                  <th>Contact Number</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {donners.map((donner, index) => (
+                  <tr
+                    key={donner._id}
+                    className="hover:bg-red-50 transition-all"
+                  >
+                    <td className="font-semibold">{index + 1}</td>
+
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <FaUsers className="text-red-600" />
+                        {donner?.RecipientName}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <FaMapMarkerAlt className="text-red-600" />
+                        {donner?.HospitalName}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <FaCalendarAlt className="text-red-600" />
+                        {donner?.date}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <FaClock className="text-red-600" />
+                        {donner?.time}
+                      </div>
+                    </td>
+
+                    <td>
+                      <span className="badge badge-error badge-outline font-semibold">
+                        <FaTint />
+                        {donner?.Blood}
+                      </span>
+                    </td>
+
+                    <td>
+                      <span className="flex items-center gap-2 font-bold text-red-700">
+                        <FaPhoneAlt />
+                        {donner?.number}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="border-t bg-gray-50 px-6 py-4">
+            <p className="text-sm text-gray-500">
+              Total Donation Responses:{" "}
+              <span className="font-bold text-red-700">
+                {donners.length}
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

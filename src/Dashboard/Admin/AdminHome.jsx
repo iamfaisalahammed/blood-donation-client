@@ -12,19 +12,19 @@ const AdminHome = () => {
     const fetchData = async () => {
       try {
         const donorRes = await fetch(
-          "http://localhost:5173/donor"
+          "http://localhost:5000/donor"
         );
         const donorData = await donorRes.json();
         setDonors(donorData);
 
         const fundRes = await fetch(
-          "http://localhost:5173/fund"
+          "http://localhost:5000/fund"
         );
         const fundData = await fundRes.json();
         setFunds(fundData);
 
         const bloodReqRes = await fetch(
-          "http://localhost:5173/DonationRequests"
+          "http://localhost:5000/DonationRequests"
         );
         const bloodReqData = await bloodReqRes.json();
         setBloodReq(bloodReqData);

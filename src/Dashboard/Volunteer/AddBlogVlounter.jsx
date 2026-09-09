@@ -32,7 +32,7 @@ const AddBlogVlounter = () => {
       data.image = imageUploadResponse.data.data.url;
 
       const res = await axios.post(
-        "http://localhost:5173/blog",
+        "http://localhost:5000/blog",
         {
           ...data,
           content,

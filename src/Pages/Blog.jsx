@@ -7,7 +7,7 @@ const Blog = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5173/AllBlog")
+      .get("http://localhost:5000/AllBlog")
       .then((res) => {
         const publishedBlogs = res.data.filter(
           (blog) => blog.status === "published"

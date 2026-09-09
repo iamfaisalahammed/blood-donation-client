@@ -36,7 +36,7 @@ const SearchPage = () => {
 
     try {
       const res = await axios.get(
-        `http://localhost:3000/searchDonor?${queryParams}`
+        `http://localhost:5000/searchDonor?${queryParams}`
       );
 
       setDonner(res.data);

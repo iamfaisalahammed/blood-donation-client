@@ -91,7 +91,7 @@ const Nav = () => {
         {user ? (
           <div className="flex items-center gap-3">
             <img
-              className="w-11 h-11 rounded-full object-cover"
+              className="w-11 h-11 rounded-full border-2 border-red-600 object-cover"
               src={
                 user?.photoURL ||
                 "https://i.ibb.co/4pDNDk1/avatar.png"

@@ -1,6 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-
-import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaTint,
+  FaCalendarAlt,
+  FaClock,
+  FaHospital,
+  FaCheckCircle,
+  FaTimesCircle,
+} from "react-icons/fa";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Providers/AuthProvider";
@@ -9,200 +17,307 @@ import ReactPaginate from "react-paginate";
 const MyDonation = () => {
   const [donners, setDonner] = useState([]);
   const [currentDonners, setCurrentDonners] = useState([]);
-  const { user } = useContext(AuthContext);
-  const itemsPerPage = 8;
-  //! -------------delete---------------------------------
+  const [loading, setLoading] = useState(true);
 
+  const { user } = useContext(AuthContext);
+
+  const itemsPerPage = 6;
+
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "pending":
+        return "bg-yellow-100 text-yellow-700 border-yellow-300";
+      case "inprogress":
+        return "bg-blue-100 text-blue-700 border-blue-300";
+      case "done":
+        return "bg-green-100 text-green-700 border-green-300";
+      case "cancelled":
+        return "bg-red-100 text-red-700 border-red-300";
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-300";
+    }
+  };
+
+  // Delete Donation
   const handleUserDelete = (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Delete Request?",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Delete",
     }).then((result) => {
       if (result.isConfirmed) {
-        //   ----------Delete from the database--------
-        fetch(
-          `http://localhost:5173/donationDelete/${id}`,
-          {
-            method: "DELETE",
-          }
-        )
+        fetch(`http://localhost:5000/donationDelete/${id}`, {
+          method: "DELETE",
+        })
           .then((res) => res.json())
           .then((data) => {
-            if (data.deletedCount) {
+            if (data.deletedCount > 0) {
               Swal.fire({
-                title: "Deleted!",
-                text: "Your request has been successfully deleted",
                 icon: "success",
+                title: "Deleted Successfully",
+                timer: 1500,
+                showConfirmButton: false,
               });
 
-              const remainingDonner = donners.filter(
-                (singleDonner) => singleDonner._id !== id
+              const remaining = donners.filter(
+                (item) => item._id !== id
               );
-              setDonner(remainingDonner);
+              setDonner(remaining);
             }
           });
       }
     });
   };
-  // --------------------------------------------------------------------------------------------
-  const handleStatusUp = (id, newStatus) => {
-    if (!id) return;
 
+  // Update Status
+  const handleStatusUp = (id, newStatus) => {
     Swal.fire({
-      title: `Are you sure you want to mark this as ${newStatus}?`,
-      icon: "warning",
+      title: `Mark as ${newStatus}?`,
+      icon: "question",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: `Yes, ${newStatus}!`,
+      confirmButtonColor: "#16a34a",
+      confirmButtonText: "Confirm",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(
-          `http://localhost:5173/upDonationStatus/${id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ status: newStatus }),
-          }
-        )
+        fetch(`http://localhost:5000/upDonationStatus/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: newStatus,
+          }),
+        })
           .then((res) => res.json())
           .then((data) => {
             if (data.modifiedCount > 0) {
               Swal.fire({
-                title: "Updated!",
-                text: `The status has been changed to ${newStatus}`,
                 icon: "success",
+                title: "Status Updated",
+                timer: 1500,
+                showConfirmButton: false,
               });
 
-              const updatedDonners = donners.map((donner) =>
-                donner._id === id ? { ...donner, status: newStatus } : donner
+              const updated = donners.map((item) =>
+                item._id === id
+                  ? { ...item, status: newStatus }
+                  : item
               );
-              setDonner(updatedDonners);
+
+              setDonner(updated);
             }
           });
       }
     });
   };
-  // ----------------------------------------------------------------------------------------------
 
+  // Load Donations
   useEffect(() => {
     if (user?.email) {
+      setLoading(true);
+
       fetch(
-        `http://localhost:5173/MyDonations?email=${user.email}`
+        `http://localhost:5000/MyDonations?email=${user.email}`
       )
         .then((res) => res.json())
-        .then((donner) => setDonner(donner));
+        .then((data) => {
+          setDonner(data);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [user]);
-  // -----------------------------Pagination-----------------------------------
+
+  // Pagination
   const handlePageClick = (event) => {
     const selectedPage = event.selected;
     const offset = selectedPage * itemsPerPage;
-    setCurrentDonners(donners.slice(offset, offset + itemsPerPage));
+
+    setCurrentDonners(
+      donners.slice(offset, offset + itemsPerPage)
+    );
   };
 
   useEffect(() => {
     setCurrentDonners(donners.slice(0, itemsPerPage));
   }, [donners]);
-  return (
-    <>
-      <div>
-        <h2 className="text-2xl text-center bg-gray-50 shadow-xl glass text-black py-2 rounded-lg ">
-          List of All My Blood Requests
-        </h2>
-        <div className="divider "></div>
-      </div>
-      {/* -------------------------------Table----------------------- */}
-      <h1 className="text-xl font-bold text-center my-4 text-red-900">
-        {donners.length === 0 && "---- No donations found ---- "}
-      </h1>
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Recipient</th>
-              <th>Location</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Blood Group</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
 
-          <tbody>
-            {/* row  */}
-            {currentDonners.map((donner, i) => (
-              <tr key={donner._id}>
-                <td>{i + 1}</td>
-                <td>{donner?.recipientName}</td>
-                <td>{donner?.hospitalName}</td>
-                <td>{donner?.date}</td>
-                <td>{donner?.time}</td>
-                <td>{donner?.Blood}</td>
-                <td>{donner?.status}</td>
-                <td className=" px-4 py-2 flex gap-2">
-                  {donner.status === "pending" && (
-                    <>
-                      <Link
-                        to={`/dashboard/update/${donner._id}`}
-                        className="bg-blue-500 text-white px-2 py-1 rounded"
-                      >
-                        <FaEdit></FaEdit>
-                      </Link>
-                    </>
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <span className="loading loading-spinner loading-lg text-red-600"></span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-4 md:px-6">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="bg-gradient-to-r from-red-700 to-red-900 text-white rounded-3xl p-8 shadow-xl">
+          <h2 className="text-3xl md:text-4xl font-bold">
+            My Blood Requests
+          </h2>
+
+          <p className="mt-2 text-red-100">
+            Manage and track all your blood donation requests.
+          </p>
+
+          <div className="mt-5">
+            <span className="bg-white/20 px-4 py-2 rounded-full text-sm">
+              Total Requests: {donners.length}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      {donners.length === 0 ? (
+        <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
+          <FaTint className="mx-auto text-6xl text-red-500 mb-4" />
+
+          <h3 className="text-2xl font-bold text-gray-800">
+            No Blood Requests Found
+          </h3>
+
+          <p className="text-gray-500 mt-2">
+            You haven't created any blood requests yet.
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {currentDonners.map((donner) => (
+              <div
+                key={donner._id}
+                className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
+              >
+                {/* Top */}
+                <div className="bg-red-50 p-5 border-b">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-bold text-lg text-gray-800">
+                      {donner?.recipientName}
+                    </h3>
+
+                    <span
+                      className={`px-3 py-1 text-xs font-bold rounded-full border ${getStatusClass(
+                        donner?.status
+                      )}`}
+                    >
+                      {donner?.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <FaHospital className="text-red-600" />
+                    <span>{donner?.hospitalName}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <FaCalendarAlt className="text-red-600" />
+                    <span>{donner?.date}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <FaClock className="text-red-600" />
+                    <span>{donner?.time}</span>
+                  </div>
+
+                  <div className="pt-2">
+                    <span className="bg-red-100 text-red-700 px-4 py-2 rounded-full font-bold">
+                      {donner?.Blood}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="border-t p-4 flex flex-wrap gap-2">
+                  {donner?.status === "pending" && (
+                    <Link
+                      to={`/dashboard/update/${donner._id}`}
+                      className="btn btn-sm bg-blue-600 hover:bg-blue-700 border-none text-white"
+                    >
+                      <FaEdit />
+                      Edit
+                    </Link>
                   )}
-                  {donner.status === "inprogress" && (
+
+                  {donner?.status === "inprogress" && (
                     <>
                       <button
-                        onClick={() => handleStatusUp(donner._id, "done")}
-                        className="bg-green-500 text-white px-2 py-1 rounded"
+                        onClick={() =>
+                          handleStatusUp(
+                            donner._id,
+                            "done"
+                          )
+                        }
+                        className="btn btn-sm bg-green-600 hover:bg-green-700 border-none text-white"
                       >
+                        <FaCheckCircle />
                         Done
                       </button>
+
                       <button
-                        onClick={() => handleStatusUp(donner._id, "cancelled")}
-                        className="bg-gray-500 text-white px-2 py-1 rounded"
+                        onClick={() =>
+                          handleStatusUp(
+                            donner._id,
+                            "cancelled"
+                          )
+                        }
+                        className="btn btn-sm bg-gray-600 hover:bg-gray-700 border-none text-white"
                       >
+                        <FaTimesCircle />
                         Cancel
                       </button>
                     </>
                   )}
 
                   <button
-                    onClick={() => handleUserDelete(donner._id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    onClick={() =>
+                      handleUserDelete(donner._id)
+                    }
+                    className="btn btn-sm bg-red-600 hover:bg-red-700 border-none text-white"
                   >
-                    <FaTrash></FaTrash>
+                    <FaTrash />
+                    Delete
                   </button>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-        {/* --------------Pagination------------------------------------ */}
+          </div>
 
-        <ReactPaginate
-          previousLabel={"< previous"}
-          nextLabel={"next >"}
-          pageCount={Math.ceil(donners.length / itemsPerPage)}
-          onPageChange={handlePageClick}
-          containerClassName=" mt-8 flex justify-center space-x-2"
-          pageClassName="py-2 px-4 border rounded"
-          pageLinkClassName="text-gray-700"
-          activeClassName="bg-red-500 text-white"
-        />
-      </div>
-    </>
+          {/* Pagination */}
+          <div className="mt-10 flex justify-center">
+            <ReactPaginate
+              previousLabel={"← Previous"}
+              nextLabel={"Next →"}
+              pageCount={Math.ceil(
+                donners.length / itemsPerPage
+              )}
+              onPageChange={handlePageClick}
+              breakLabel={"..."}
+              containerClassName="flex flex-wrap gap-2"
+              pageClassName="border rounded-lg overflow-hidden"
+              pageLinkClassName="px-4 py-2 block"
+              previousClassName="border rounded-lg overflow-hidden"
+              previousLinkClassName="px-4 py-2 block"
+              nextClassName="border rounded-lg overflow-hidden"
+              nextLinkClassName="px-4 py-2 block"
+              activeClassName="bg-red-600 text-white border-red-600"
+            />
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 

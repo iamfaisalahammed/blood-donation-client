@@ -7,7 +7,7 @@ const VolunteerManagement = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5173/blogs")
+      .get("http://localhost:5000/blogs")
       .then((res) => setBlogs(res.data));
   }, []);
 

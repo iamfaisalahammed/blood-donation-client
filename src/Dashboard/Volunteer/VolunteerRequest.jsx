@@ -24,7 +24,7 @@ const VolunteerRequest = () => {
       if (result.isConfirmed) {
         //   ----------Delete from the database--------
         fetch(
-          `http://localhost:5173/donationDeletee/${id}`,
+          `http://localhost:5000/donationDeletee/${id}`,
           {
             method: "DELETE",
           }
@@ -61,7 +61,7 @@ const VolunteerRequest = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5173/upDonationStatuss/${id}`,
+          `http://localhost:5000/upDonationStatuss/${id}`,
           {
             method: "PUT",
             headers: {
@@ -92,7 +92,7 @@ const VolunteerRequest = () => {
 
   useEffect(() => {
     fetch(
-      `http://localhost:5173/DonationVolunteerRequest`
+      `http://localhost:5000/DonationVolunteerRequest`
     )
       .then((res) => res.json())
       .then((donner) => setDonner(donner));

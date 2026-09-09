@@ -9,7 +9,7 @@ const AdminBlogs = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5173/blog")
+      .get("http://localhost:5000/blog")
       .then((res) => setBlogs(res.data));
   }, []);
 
@@ -25,7 +25,7 @@ const AdminBlogs = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5173/blogs/${id}`,
+          `http://localhost:5000/blogs/${id}`,
           { method: "DELETE" }
         )
           .then((res) => res.json())
@@ -51,7 +51,7 @@ const AdminBlogs = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5173/blogStatus/${id}`,
+          `http://localhost:5000/blogStatus/${id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
