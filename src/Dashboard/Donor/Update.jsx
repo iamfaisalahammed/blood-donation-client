@@ -33,7 +33,7 @@ const Update = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/DonationUp/${_id}`,
+        `https://blood-donation-server-eta-eight.vercel.app/DonationUp/${_id}`,
         {
           method: "PUT",
           headers: {

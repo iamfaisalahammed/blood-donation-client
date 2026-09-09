@@ -15,7 +15,7 @@ const VolunteerManagement = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/blogs")
+      .get("https://blood-donation-server-eta-eight.vercel.app/blogs")
       .then((res) => {
         setBlogs(res.data);
       })

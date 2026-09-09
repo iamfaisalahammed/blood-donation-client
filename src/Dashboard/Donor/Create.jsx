@@ -62,7 +62,7 @@ const Create = () => {
       }
 
       try {
-        const res = await axios.get("http://localhost:5000/user/Block");
+        const res = await axios.get("https://blood-donation-server-eta-eight.vercel.app/user/Block");
 
         // Make sure users is always an array
         const userData = Array.isArray(res.data)
@@ -133,7 +133,7 @@ const Create = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/recipient",
+        "https://blood-donation-server-eta-eight.vercel.app/recipient",
         donationRequest,
       );
 

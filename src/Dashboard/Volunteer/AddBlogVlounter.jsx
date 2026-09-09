@@ -58,7 +58,7 @@ const AddBlogVlounter = () => {
       if (imageUploadResponse.data.success) {
         data.image = imageUploadResponse.data.data.url;
 
-        const res = await axios.post("http://localhost:5000/blog", {
+        const res = await axios.post("https://blood-donation-server-eta-eight.vercel.app/blog", {
           ...data,
           content,
           status: "draft",

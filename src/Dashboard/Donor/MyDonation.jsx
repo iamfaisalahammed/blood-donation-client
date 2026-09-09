@@ -50,7 +50,7 @@ const MyDonation = () => {
       confirmButtonText: "Delete",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/donationDelete/${id}`, {
+        fetch(`https://blood-donation-server-eta-eight.vercel.app/donationDelete/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
@@ -83,7 +83,7 @@ const MyDonation = () => {
       confirmButtonText: "Confirm",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/upDonationStatus/${id}`, {
+        fetch(`https://blood-donation-server-eta-eight.vercel.app/upDonationStatus/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const MyDonation = () => {
       setLoading(true);
 
       fetch(
-        `http://localhost:5000/MyDonations?email=${user.email}`
+        `https://blood-donation-server-eta-eight.vercel.app/MyDonations?email=${user.email}`
       )
         .then((res) => res.json())
         .then((data) => {

@@ -70,10 +70,10 @@ const Details = () => {
         status: "pending",
       };
 
-      const res = await axios.post("http://localhost:5000/donor", donorData);
+      const res = await axios.post("https://blood-donation-server-eta-eight.vercel.app/donor", donorData);
       if (res.data.insertedId) {
         // Donation Request Status Update
-        await axios.put(`http://localhost:5000/DonationUpStatus/${_id}`, {
+        await axios.put(`https://blood-donation-server-eta-eight.vercel.app/DonationUpStatus/${_id}`, {
           status: "inprogress",
         });
 

@@ -23,7 +23,7 @@ const DonorHome = () => {
 
     setLoading(true);
 
-    const url = `http://localhost:5000/myDonor?email=${encodeURIComponent(
+    const url = `https://blood-donation-server-eta-eight.vercel.app/myDonor?email=${encodeURIComponent(
       user.email
     )}`;
 

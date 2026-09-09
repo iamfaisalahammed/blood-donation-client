@@ -22,7 +22,7 @@ const DonationRequest = () => {
         setLoading(true);
         setError("");
 
-        const response = await fetch("http://localhost:5000/DonationRequrest");
+        const response = await fetch("https://blood-donation-server-eta-eight.vercel.app/DonationRequrest");
 
         if (!response.ok) {
           throw new Error("Failed to load donation requests.");

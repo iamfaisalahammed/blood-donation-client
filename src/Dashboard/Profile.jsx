@@ -18,7 +18,7 @@ import { AuthContext } from "../Providers/AuthProvider";
 import Swal from "sweetalert2";
 import { updateProfile } from "firebase/auth";
 
-const API_URL = "http://localhost:5000";
+const API_URL = "https://blood-donation-server-eta-eight.vercel.app";
 
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;

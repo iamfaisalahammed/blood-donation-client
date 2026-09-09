@@ -12,13 +12,13 @@ const VolunteerHome = () => {
 
   useEffect(() => {
     // Fetch donors
-    fetch("http://localhost:5000/donor")
+    fetch("https://blood-donation-server-eta-eight.vercel.app/donor")
       .then((res) => res.json())
       .then((data) => setDonner(data))
       .catch((error) => console.error("Donor fetch error:", error));
 
     // Fetch blood requests
-    fetch("http://localhost:5000/DonationRequrests")
+    fetch("https://blood-donation-server-eta-eight.vercel.app/DonationRequrests")
       .then((res) => res.json())
       .then((data) => setBloodReq(data))
       .catch((error) =>

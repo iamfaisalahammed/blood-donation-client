@@ -53,7 +53,7 @@ const AdminRequest = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5000/donationDeletee/${currentDonnerId}`,
+          `https://blood-donation-server-eta-eight.vercel.app/donationDeletee/${currentDonnerId}`,
           {
             method: "DELETE",
           }
@@ -107,7 +107,7 @@ const AdminRequest = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(
-          `http://localhost:5000/upDonationStatuss/${currentDonnerId}`,
+          `https://blood-donation-server-eta-eight.vercel.app/upDonationStatuss/${currentDonnerId}`,
           {
             method: "PUT",
             headers: {
@@ -163,7 +163,7 @@ const AdminRequest = () => {
   useEffect(() => {
     setLoading(true);
 
-    fetch("http://localhost:5000/DonationRequrestAdmin")
+    fetch("https://blood-donation-server-eta-eight.vercel.app/DonationRequrestAdmin")
       .then((res) => res.json())
       .then((donner) => {
         setDonner(donner);

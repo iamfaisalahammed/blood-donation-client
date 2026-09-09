@@ -234,7 +234,7 @@ const Banner = () => {
     setIsSubmitting(true);
 
     try {
-      await axios.post("http://localhost:5000/donors", formData);
+      await axios.post("https://blood-donation-server-eta-eight.vercel.app/donors", formData);
 
       handleCloseModal();
       resetForm();

@@ -23,7 +23,7 @@ const VolunteerRequest = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/donationDeletee/${id}`, {
+        fetch(`https://blood-donation-server-eta-eight.vercel.app/donationDeletee/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
@@ -69,7 +69,7 @@ const VolunteerRequest = () => {
       confirmButtonText: `Yes, ${newStatus}!`,
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/upDonationStatuss/${id}`, {
+        fetch(`https://blood-donation-server-eta-eight.vercel.app/upDonationStatuss/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const VolunteerRequest = () => {
   useEffect(() => {
     setLoading(true);
 
-    fetch(`http://localhost:5000/DonationVolunteerRequest`)
+    fetch(`https://blood-donation-server-eta-eight.vercel.app/DonationVolunteerRequest`)
       .then((res) => res.json())
       .then((data) => {
         setDonner(data);
