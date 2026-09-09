@@ -20,7 +20,7 @@ import Detailas from "./Dashboard/Donor/Detailas";
 import MyDonation from "./Dashboard/Donor/MyDonation";
 import DonationRequrest from "./Layout/Donation/DonationRequrest";
 import SearchPage from "./Layout/Home/SearchPage";
-import Fund from "./Layout/Home/Payment/Fund";
+
 import AdminHome from "./Dashboard/Admin/AdminHome";
 import AdminUsers from "./Dashboard/Admin/AdminUsers";
 import AdminRequrest from "./Dashboard/Admin/AdminRequrest";
@@ -30,7 +30,7 @@ import VolunteerRequest from "./Dashboard/Volunteer/VolunteerRequest";
 import VolunteerManagement from "./Dashboard/Volunteer/VolunteerManagement";
 import AdminRoute from "./Dashboard/Admin/AdminRoute";
 import VolunteerRoute from "./Dashboard/Volunteer/VolunteerRoute";
-import GiveFund from "./Layout/Home/Payment/GiveFund";
+
 import BlogManagment from "./Dashboard/Donor/BlogManagment";
 import AddBlogVlounter from "./Dashboard/Volunteer/AddBlogVlounter";
 import Seemore from "./Layout/Home/Seemore";
@@ -58,22 +58,8 @@ const router = createBrowserRouter([
         path: "/search",
         element: <SearchPage></SearchPage>,
       },
-      {
-        path: "/fund",
-        element: (
-          <PrivateRoute>
-            <GiveFund></GiveFund>
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "/fundpay",
-        element: (
-          <PrivateRoute>
-            <Fund></Fund>
-          </PrivateRoute>
-        ),
-      },
+    
+     
     ],
   },
   {

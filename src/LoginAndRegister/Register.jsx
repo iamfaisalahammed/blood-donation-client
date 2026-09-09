@@ -201,9 +201,9 @@ Filter districts
     );
   }, [districts, districtSearch]);
 
-  /* ---------------------------------
+  /* 
 Filter upazilas
----------------------------------- */
+*/
 
   const filteredUpazilas = useMemo(() => {
     if (!selectedDistrict) {

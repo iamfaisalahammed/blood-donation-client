@@ -47,18 +47,6 @@ const Details = () => {
 
   const [isConfirm, setConfirm] = useState(false);
 
-  useEffect(() => {
-    if (!_id) return;
-
-    axios
-      .put(`http://localhost:5000/DonationUpStatus/${_id}`, {
-        status: "inprogress",
-      })
-      .catch((error) => {
-        console.error("Status update error:", error);
-      });
-  }, [_id]);
-
   const onSubmit = async (formData) => {
     if (isConfirm) return;
 
@@ -82,19 +70,22 @@ const Details = () => {
         status: "pending",
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/donor",
-        donorData
-      );
-
+      const res = await axios.post("http://localhost:5000/donor", donorData);
       if (res.data.insertedId) {
+        // Donation Request Status Update
+        await axios.put(`http://localhost:5000/DonationUpStatus/${_id}`, {
+          status: "inprogress",
+        });
+
         toast.success(
-          "Your blood donation request has been successfully submitted! Thank you for your generosity."
+          "Your blood donation request has been successfully submitted! Thank you for your generosity.",
         );
 
         reset();
 
         document.getElementById("donation_modal")?.close();
+
+        setConfirm(false);
       } else {
         toast.error("Failed to submit donation request.");
         setConfirm(false);
@@ -345,16 +336,14 @@ const Details = () => {
               </h3>
 
               <p className="text-red-100 mt-2 mb-6 max-w-lg mx-auto">
-                Share your contact number with the recipient and take the
-                first step toward helping someone in need.
+                Share your contact number with the recipient and take the first
+                step toward helping someone in need.
               </p>
 
               <button
                 type="button"
                 onClick={() =>
-                  document
-                    .getElementById("donation_modal")
-                    ?.showModal()
+                  document.getElementById("donation_modal")?.showModal()
                 }
                 className="group inline-flex items-center justify-center gap-3 bg-white text-red-600 hover:bg-gray-100 px-7 py-3.5 rounded-full font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
@@ -372,14 +361,11 @@ const Details = () => {
         </div>
       </div>
 
-    {/* Modern Donation Modal */}
-{/* Compact Responsive Donation Modal */}
-<dialog
-  id="donation_modal"
-  className="modal p-3"
->
-  <div
-    className="
+      {/* Modern Donation Modal */}
+      {/* Compact Responsive Donation Modal */}
+      <dialog id="donation_modal" className="modal p-3">
+        <div
+          className="
       modal-box
       w-[calc(100%-1rem)]
       max-w-[400px]
@@ -391,30 +377,30 @@ const Details = () => {
       shadow-2xl
       overflow-hidden
     "
-  >
-    {/* Header */}
-    <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-          <FaTint className="text-red-600 text-lg" />
-        </div>
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+                <FaTint className="text-red-600 text-lg" />
+              </div>
 
-        <div>
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">
-            Donor Information
-          </h2>
+              <div>
+                <h2 className="text-base sm:text-lg font-bold text-gray-900">
+                  Donor Information
+                </h2>
 
-          <p className="text-[11px] text-gray-500">
-            Complete your information
-          </p>
-        </div>
-      </div>
+                <p className="text-[11px] text-gray-500">
+                  Complete your information
+                </p>
+              </div>
+            </div>
 
-      <button
-        type="button"
-        onClick={closeModal}
-        disabled={isConfirm}
-        className="
+            <button
+              type="button"
+              onClick={closeModal}
+              disabled={isConfirm}
+              className="
           w-8 h-8
           rounded-full
           bg-gray-100
@@ -424,54 +410,51 @@ const Details = () => {
           flex items-center justify-center
           transition-all duration-200
         "
-      >
-        <FaTimes className="text-xs" />
-      </button>
-    </div>
-
-    {/* Scrollable Content */}
-    <div className="max-h-[calc(90vh-73px)] overflow-y-auto">
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="px-5 py-5"
-      >
-        {/* Request Summary */}
-        <div className="flex items-center justify-between gap-3 bg-gray-50 border border-gray-100 rounded-xl px-3.5 py-3 mb-5">
-          <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
-              Donation Request
-            </p>
-
-            <p className="text-sm font-bold text-gray-900 truncate mt-0.5">
-              {recipientName || "Recipient"}
-            </p>
-
-            <p className="text-[10px] text-gray-500 truncate mt-0.5">
-              {hospitalName || "Hospital not provided"}
-            </p>
+            >
+              <FaTimes className="text-xs" />
+            </button>
           </div>
 
-          <div className="w-11 h-11 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-sm">
-            <span className="text-xs font-extrabold">
-              {Blood || "N/A"}
-            </span>
-          </div>
-        </div>
+          {/* Scrollable Content */}
+          <div className="max-h-[calc(90vh-73px)] overflow-y-auto">
+            <form onSubmit={handleSubmit(onSubmit)} className="px-5 py-5">
+              {/* Request Summary */}
+              <div className="flex items-center justify-between gap-3 bg-gray-50 border border-gray-100 rounded-xl px-3.5 py-3 mb-5">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+                    Donation Request
+                  </p>
 
-        {/* Donor Name */}
-        <div className="mb-4">
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-            Donor Name
-          </label>
+                  <p className="text-sm font-bold text-gray-900 truncate mt-0.5">
+                    {recipientName || "Recipient"}
+                  </p>
 
-          <div className="relative">
-            <FaUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
+                  <p className="text-[10px] text-gray-500 truncate mt-0.5">
+                    {hospitalName || "Hospital not provided"}
+                  </p>
+                </div>
 
-            <input
-              type="text"
-              value={user?.displayName || ""}
-              readOnly
-              className="
+                <div className="w-11 h-11 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="text-xs font-extrabold">
+                    {Blood || "N/A"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Donor Name */}
+              <div className="mb-4">
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                  Donor Name
+                </label>
+
+                <div className="relative">
+                  <FaUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
+
+                  <input
+                    type="text"
+                    value={user?.displayName || ""}
+                    readOnly
+                    className="
                 w-full
                 h-11
                 pl-9
@@ -483,24 +466,24 @@ const Details = () => {
                 text-sm
                 outline-none
               "
-            />
-          </div>
-        </div>
+                  />
+                </div>
+              </div>
 
-        {/* Email */}
-        <div className="mb-4">
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-            Donor Email
-          </label>
+              {/* Email */}
+              <div className="mb-4">
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                  Donor Email
+                </label>
 
-          <div className="relative">
-            <FaEnvelope className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
+                <div className="relative">
+                  <FaEnvelope className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs" />
 
-            <input
-              type="email"
-              value={user?.email || ""}
-              readOnly
-              className="
+                  <input
+                    type="email"
+                    value={user?.email || ""}
+                    readOnly
+                    className="
                 w-full
                 h-11
                 pl-9
@@ -512,40 +495,38 @@ const Details = () => {
                 text-sm
                 outline-none
               "
-            />
-          </div>
-        </div>
+                  />
+                </div>
+              </div>
 
-        {/* Contact Number */}
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-            Contact Number
-            <span className="text-red-500 ml-1">*</span>
-          </label>
+              {/* Contact Number */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                  Contact Number
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
 
-          <div className="relative">
-            <FaPhoneAlt
-              className={`absolute left-3.5 top-1/2 -translate-y-1/2 text-xs ${
-                errors.number
-                  ? "text-red-500"
-                  : "text-gray-400"
-              }`}
-            />
+                <div className="relative">
+                  <FaPhoneAlt
+                    className={`absolute left-3.5 top-1/2 -translate-y-1/2 text-xs ${
+                      errors.number ? "text-red-500" : "text-gray-400"
+                    }`}
+                  />
 
-            <input
-              type="text"
-              maxLength={11}
-              inputMode="numeric"
-              autoComplete="tel"
-              placeholder="01XXXXXXXXX"
-              {...register("number", {
-                required: "Contact number is required",
-                pattern: {
-                  value: /^01[0-9]{9}$/,
-                  message: "Enter a valid 11-digit number",
-                },
-              })}
-              className={`
+                  <input
+                    type="text"
+                    maxLength={11}
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    placeholder="01XXXXXXXXX"
+                    {...register("number", {
+                      required: "Contact number is required",
+                      pattern: {
+                        value: /^01[0-9]{9}$/,
+                        message: "Enter a valid 11-digit number",
+                      },
+                    })}
+                    className={`
                 w-full
                 h-11
                 pl-9
@@ -563,38 +544,38 @@ const Details = () => {
                     : "border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-50"
                 }
               `}
-            />
-          </div>
+                  />
+                </div>
 
-          {errors.number ? (
-            <p className="text-red-500 text-[10px] mt-1.5">
-              {errors.number.message}
-            </p>
-          ) : (
-            <p className="text-gray-400 text-[10px] mt-1.5">
-              Enter your 11-digit mobile number
-            </p>
-          )}
-        </div>
+                {errors.number ? (
+                  <p className="text-red-500 text-[10px] mt-1.5">
+                    {errors.number.message}
+                  </p>
+                ) : (
+                  <p className="text-gray-400 text-[10px] mt-1.5">
+                    Enter your 11-digit mobile number
+                  </p>
+                )}
+              </div>
 
-        {/* Information */}
-        <div className="flex items-start gap-2.5 mt-4 px-3 py-2.5 rounded-xl bg-green-50 border border-green-100">
-          <FaCheckCircle className="text-green-500 text-xs mt-0.5 shrink-0" />
+              {/* Information */}
+              <div className="flex items-start gap-2.5 mt-4 px-3 py-2.5 rounded-xl bg-green-50 border border-green-100">
+                <FaCheckCircle className="text-green-500 text-xs mt-0.5 shrink-0" />
 
-          <p className="text-[10px] leading-relaxed text-gray-500">
-            Your contact number will only be shared with the recipient
-            for this donation request.
-          </p>
-        </div>
+                <p className="text-[10px] leading-relaxed text-gray-500">
+                  Your contact number will only be shared with the recipient for
+                  this donation request.
+                </p>
+              </div>
 
-        {/* Buttons */}
-        <div className="flex gap-2.5 mt-5">
-          {/* Cancel */}
-          <button
-            type="button"
-            onClick={closeModal}
-            disabled={isConfirm}
-            className="
+              {/* Buttons */}
+              <div className="flex gap-2.5 mt-5">
+                {/* Cancel */}
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  disabled={isConfirm}
+                  className="
               h-11
               flex-1
               rounded-xl
@@ -606,15 +587,15 @@ const Details = () => {
               text-xs sm:text-sm
               transition-all duration-200
             "
-          >
-            Cancel
-          </button>
+                >
+                  Cancel
+                </button>
 
-          {/* Confirm Donation */}
-          <button
-            type="submit"
-            disabled={isConfirm}
-            className="
+                {/* Confirm Donation */}
+                <button
+                  type="submit"
+                  disabled={isConfirm}
+                  className="
               h-11
               flex-1
               rounded-xl
@@ -635,32 +616,29 @@ const Details = () => {
               disabled:opacity-70
               disabled:cursor-not-allowed
             "
-          >
-            {isConfirm ? (
-              <>
-                <span className="loading loading-spinner loading-xs" />
-                Processing...
-              </>
-            ) : (
-              <>
-                <FaHeart className="text-xs" />
-                Confirm Donation
-              </>
-            )}
-          </button>
+                >
+                  {isConfirm ? (
+                    <>
+                      <span className="loading loading-spinner loading-xs" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <FaHeart className="text-xs" />
+                      Confirm Donation
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
 
-  {/* Backdrop */}
-  <form
-    method="dialog"
-    className="modal-backdrop bg-black/50"
-  >
-    <button>close</button>
-  </form>
-</dialog>
+        {/* Backdrop */}
+        <form method="dialog" className="modal-backdrop bg-black/50">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 };
