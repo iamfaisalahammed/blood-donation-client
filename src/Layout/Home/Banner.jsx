@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { FaHeart, FaXmark } from "react-icons/fa6";
@@ -7,6 +8,26 @@ import banner from "../../assets/banner.jpg";
 const Banner = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Open modal when coming from Seemore page
+
+  useEffect(() => {
+    if (location.state?.openDonorModal) {
+      setIsModalOpen(true);
+      document.body.style.overflow = "hidden";
+
+      // Clear navigation state
+      navigate("/", {
+        replace: true,
+        state: {},
+      });
+    }
+  }, [location, navigate]);
+
+  // Form Data
 
   const [formData, setFormData] = useState({
     name: "",
@@ -18,15 +39,21 @@ const Banner = () => {
     bloodGroup: "",
   });
 
+  // Open Modal
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
     document.body.style.overflow = "hidden";
   };
 
+  // Close Modal
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     document.body.style.overflow = "auto";
   };
+
+  // Input Change
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,6 +63,8 @@ const Banner = () => {
       [name]: value,
     }));
   };
+
+  // Reset Form
 
   const resetForm = () => {
     setFormData({
@@ -48,6 +77,8 @@ const Banner = () => {
       bloodGroup: "",
     });
   };
+
+  // Submit Donor Form
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,16 +123,15 @@ const Banner = () => {
 
   return (
     <>
-      {/* ================= HERO ================= */}
       <section className="relative min-h-[calc(100vh-80px)] overflow-hidden bg-white px-5 py-16 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        {/* Very subtle background decoration */}
+        {/* Background Decoration */}
         <div className="pointer-events-none absolute -left-40 top-20 h-80 w-80 rounded-full bg-red-50/70 blur-3xl" />
 
         <div className="pointer-events-none absolute -right-40 bottom-0 h-80 w-80 rounded-full bg-red-50/60 blur-3xl" />
 
         <div className="relative z-10 mx-auto flex min-h-[calc(100vh-160px)] max-w-7xl items-center">
           <div className="grid w-full items-center gap-14 lg:grid-cols-2 lg:gap-20">
-            {/* ================= LEFT ================= */}
+            {/* left content */}
             <div className="order-2 lg:order-1">
               {/* Small Label */}
               <div className="mb-7">
@@ -112,9 +142,7 @@ const Banner = () => {
 
               {/* Heading */}
               <h1 className="max-w-2xl text-center text-5xl font-black leading-[1.05] tracking-tight text-gray-950 sm:text-6xl md:text-7xl lg:text-left lg:text-[64px] xl:text-[76px]">
-                <span className="block font-serif italic">
-                  Donate Blood,
-                </span>
+                <span className="block font-serif italic">Donate Blood,</span>
 
                 <span className="mt-2 block font-serif italic text-red-600">
                   Save Lives.
@@ -126,9 +154,8 @@ const Banner = () => {
 
               {/* Description */}
               <p className="mx-auto mt-7 max-w-xl text-center text-base font-medium leading-8 text-gray-600 sm:text-lg lg:mx-0 lg:text-left">
-                A small act of kindness can give someone another chance at
-                life. Become a donor and help build a stronger, healthier
-                community.
+                A small act of kindness can give someone another chance at life.
+                Become a donor and help build a stronger, healthier community.
               </p>
 
               {/* CTA */}
@@ -143,7 +170,7 @@ const Banner = () => {
                 </button>
               </div>
 
-              {/* Simple Bottom Text */}
+              {/* Bottom Text */}
               <div className="mt-8 flex justify-center lg:justify-start">
                 <p className="text-sm font-medium text-gray-400">
                   Your donation can make a lasting difference.
@@ -151,10 +178,9 @@ const Banner = () => {
               </div>
             </div>
 
-            {/* ================= RIGHT IMAGE ================= */}
             <div className="order-1 flex justify-center lg:order-2">
               <div className="relative w-full max-w-[520px]">
-                {/* Thin decorative frame */}
+                {/* Decorative Frame */}
                 <div className="absolute -inset-3 rounded-[32px] border border-red-100" />
 
                 {/* Image Card */}
@@ -168,7 +194,7 @@ const Banner = () => {
                   </div>
                 </div>
 
-                {/* Minimal bottom information */}
+                {/* Bottom Information */}
                 <div className="absolute -bottom-5 left-1/2 w-[85%] -translate-x-1/2 rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-lg">
                   <div className="flex items-center justify-center gap-3">
                     <div className="h-2 w-2 rounded-full bg-red-600" />
@@ -184,7 +210,6 @@ const Banner = () => {
         </div>
       </section>
 
-      {/* ================= MODAL ================= */}
       {isModalOpen && (
         <div
           className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 px-4 py-6 backdrop-blur-sm"
@@ -219,10 +244,9 @@ const Banner = () => {
               </p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                {/* Name */}
+                {/* Full Name */}
                 <div>
                   <label
                     htmlFor="name"
@@ -303,6 +327,7 @@ const Banner = () => {
                     className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm font-medium text-black outline-none transition-all focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-50"
                   >
                     <option value="">Select blood group</option>
+
                     <option value="A+">A+</option>
                     <option value="A-">A-</option>
                     <option value="B+">B+</option>
@@ -356,7 +381,7 @@ const Banner = () => {
                   />
                 </div>
 
-                {/* Location */}
+                {/* Full Location */}
                 <div className="md:col-span-2">
                   <label
                     htmlFor="location"
@@ -378,7 +403,6 @@ const Banner = () => {
                 </div>
               </div>
 
-              {/* Form Buttons */}
               <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                 <button
                   type="button"

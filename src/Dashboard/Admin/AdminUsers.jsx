@@ -146,9 +146,9 @@ const AdminUsers = () => {
                     className="h-12 w-12 rounded-full border"
                   />
                 </td>
-                <td className="py-2 px-4">{user?.email}</td>
-                <td className="py-2 px-4">{user?.name}</td>
-                <td className="py-2 px-4 font-semibold">{user?.role}</td>
+                <td className="py-2 px-4 text-black">{user?.email}</td>
+                <td className="py-2 px-4 text-black">{user?.name}</td>
+                <td className="py-2 px-4 font-semibold text-black">{user?.role}</td>
                 <td className="py-2 px-4">
                   <span
                     className={`px-3 py-1 rounded-full text-white ${
@@ -172,48 +172,85 @@ const AdminUsers = () => {
         </table>
       </div>
 
-      {modalOpen && selectedUser && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-md shadow-md">
-            <h3 className="text-lg font-semibold">
-              Manage {selectedUser.name}
-            </h3>
-            <button
-              onClick={() => handleMakeVolunteer(selectedUser)}
-              className="block w-full text-left px-4 py-2 mt-2 bg-gray-200 hover:bg-gray-300"
-            >
-              🏅 Make Volunteer
-            </button>
-            <button
-              onClick={() => handleMakeAdmin(selectedUser)}
-              className="block w-full text-left px-4 py-2 mt-2 bg-gray-200 hover:bg-gray-300"
-            >
-              🏆 Make Admin
-            </button>
-            {selectedUser?.status === "Active" ? (
-              <button
-                onClick={() => handleStatusUpdate(selectedUser._id, "Blocked")}
-                className="block w-full text-left px-4 py-2 mt-2 bg-red-500 text-white hover:bg-red-600"
-              >
-                🔒 Block User
-              </button>
-            ) : (
-              <button
-                onClick={() => handleStatusUpdate(selectedUser._id, "Active")}
-                className="block w-full text-left px-4 py-2 mt-2 bg-green-500 text-white hover:bg-green-600"
-              >
-                🔓 Unblock User
-              </button>
-            )}
-            <button
-              onClick={closeModal}
-              className="block w-full text-left px-4 py-2 mt-2 bg-gray-300 hover:bg-gray-400"
-            >
-              ❌ Close
-            </button>
+{modalOpen && selectedUser && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="bg-white w-full max-w-md mx-4 rounded-3xl shadow-2xl overflow-hidden">
+      
+      {/* Header */}
+      <div className="bg-gradient-to-r from-red-500 to-rose-600 p-6 text-white">
+        <div className="flex items-center gap-4">
+          <img
+            src={
+              selectedUser?.photoURL ||
+              "https://i.ibb.co/4pDNDk1/avatar.png"
+            }
+            alt=""
+            className="w-16 h-16 rounded-full border-4 border-white"
+          />
+
+          <div>
+            <h2 className="text-xl font-bold">
+              {selectedUser?.name}
+            </h2>
+            <p className="text-sm text-red-100">
+              {selectedUser?.email}
+            </p>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Body */}
+      <div className="p-6 space-y-3">
+        <button
+          onClick={() => handleMakeVolunteer(selectedUser)}
+          className="btn w-full bg-blue-500 hover:bg-blue-600 border-none text-white"
+        >
+          🏅 Make Volunteer
+        </button>
+
+        <button
+          onClick={() => handleMakeAdmin(selectedUser)}
+          className="btn w-full bg-purple-500 hover:bg-purple-600 border-none text-white"
+        >
+          👑 Make Admin
+        </button>
+
+        {selectedUser?.status === "Active" ? (
+          <button
+            onClick={() =>
+              handleStatusUpdate(
+                selectedUser._id,
+                "Blocked"
+              )
+            }
+            className="btn w-full bg-red-500 hover:bg-red-600 border-none text-white"
+          >
+            🔒 Block User
+          </button>
+        ) : (
+          <button
+            onClick={() =>
+              handleStatusUpdate(
+                selectedUser._id,
+                "Active"
+              )
+            }
+            className="btn w-full bg-green-500 hover:bg-green-600 border-none text-white"
+          >
+            🔓 Unblock User
+          </button>
+        )}
+
+        <button
+          onClick={closeModal}
+          className="btn w-full bg-gray-200 hover:bg-gray-300 border-none text-gray-700"
+        >
+          ✕ Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };

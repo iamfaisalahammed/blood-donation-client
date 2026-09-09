@@ -16,32 +16,48 @@ const DonorHome = () => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user?.email) {
-      setLoading(true);
-
-      fetch(`http://localhost:5000/myDonor?email=${user.email}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setDonner(Array.isArray(data) ? data : []);
-        })
-        .catch((error) => {
-          console.error("Fetch Error:", error);
-
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Failed to load donor information",
-          });
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    if (!user?.email) {
+      setLoading(false);
+      return;
     }
-  }, [user]);
+
+    setLoading(true);
+
+    const url = `http://localhost:5000/myDonor?email=${encodeURIComponent(
+      user.email
+    )}`;
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP Error: ${res.status}`);
+        }
+
+        return res.json();
+      })
+      .then((data) => {
+        console.log("myDonor API Response:", data);
+
+        setDonner(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        console.error("Fetch Error:", error);
+
+        setDonner([]);
+
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to load donor information",
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [user?.email]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      {/* Header */}
       <div className="bg-white rounded-3xl shadow-lg p-6 md:p-8 mb-6">
         <div className="flex items-center gap-4">
           <div className="bg-red-100 p-4 rounded-2xl">
@@ -60,11 +76,13 @@ const DonorHome = () => {
         </div>
       </div>
 
-      {/* Loading */}
       {loading ? (
         <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
           <span className="loading loading-spinner loading-lg text-red-700"></span>
-          <p className="mt-4 text-gray-500">Loading donor information...</p>
+
+          <p className="mt-4 text-gray-500">
+            Loading donor information...
+          </p>
         </div>
       ) : donners.length === 0 ? (
         <div className="bg-white rounded-3xl shadow-lg p-12 text-center">
@@ -88,7 +106,7 @@ const DonorHome = () => {
 
           <div className="overflow-x-auto">
             <table className="table">
-              <thead className="bg-gray-100">
+              <thead className="bg-gray-100 text-black">
                 <tr>
                   <th>#</th>
                   <th>Recipient</th>
@@ -103,50 +121,50 @@ const DonorHome = () => {
               <tbody>
                 {donners.map((donner, index) => (
                   <tr
-                    key={donner._id}
+                    key={donner?._id || index}
                     className="hover:bg-red-50 transition-all"
                   >
                     <td className="font-semibold">{index + 1}</td>
 
                     <td>
-                      <div className="flex items-center gap-2">
+                      <div className="flex text-black items-center gap-2">
                         <FaUsers className="text-red-600" />
-                        {donner?.RecipientName}
+                        {donner?.recipientName || "N/A"}
                       </div>
                     </td>
 
                     <td>
-                      <div className="flex items-center gap-2">
+                      <div className="flex text-black items-center gap-2">
                         <FaMapMarkerAlt className="text-red-600" />
-                        {donner?.HospitalName}
+                        {donner?.hospitalName || "N/A"}
                       </div>
                     </td>
 
                     <td>
-                      <div className="flex items-center gap-2">
+                      <div className="flex text-black items-center gap-2">
                         <FaCalendarAlt className="text-red-600" />
-                        {donner?.date}
+                        {donner?.date || "N/A"}
                       </div>
                     </td>
 
                     <td>
-                      <div className="flex items-center gap-2">
+                      <div className="flex text-black items-center gap-2">
                         <FaClock className="text-red-600" />
-                        {donner?.time}
+                        {donner?.time || "N/A"}
                       </div>
                     </td>
 
                     <td>
-                      <span className="badge badge-error badge-outline font-semibold">
+                      <span className="badge text-black badge-error badge-outline font-semibold gap-1">
                         <FaTint />
-                        {donner?.Blood}
+                        {donner?.Blood || "N/A"}
                       </span>
                     </td>
 
                     <td>
-                      <span className="flex items-center gap-2 font-bold text-red-700">
+                      <span className="flex text-black items-center gap-2 font-bold text-red-700">
                         <FaPhoneAlt />
-                        {donner?.number}
+                        {donner?.number || "N/A"}
                       </span>
                     </td>
                   </tr>
@@ -158,7 +176,7 @@ const DonorHome = () => {
           <div className="border-t bg-gray-50 px-6 py-4">
             <p className="text-sm text-gray-500">
               Total Donation Responses:{" "}
-              <span className="font-bold text-red-700">
+              <span className="font-bold  text-red-700">
                 {donners.length}
               </span>
             </p>
